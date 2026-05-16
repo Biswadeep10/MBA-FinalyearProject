@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Confirmed — MediSchedule </title>
+  <meta name="description" content="Your appointment has been successfully booked with MediSchedule AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" />
+          <path d="M12 8v4l3 3" />
+        </svg>
+      </div>
+      <span class="nav-title">MediSchedule <span class="ai-badge">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Book</a>
+      <a href="/appointments" class="nav-link">All Appointments</a>
+    </div>
+  </nav>
+
+  <div class="success-page">
+    <div class="hero-bg-blobs">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+    </div>
+
+    <div class="success-card glass">
+      <!-- Animated checkmark -->
+      <div class="success-icon-wrap">
+        <svg class="checkmark" viewBox="0 0 52 52">
+          <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+          <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+      </div>
+
+      <h1 class="success-title">Appointment Confirmed!</h1>
+      <p class="success-subtitle">Your booking has been successfully scheduled via MediSchedule AI.</p>
+
+      <!-- Booking Details Card -->
+      <div class="booking-details">
+        <div class="detail-row">
+          <div class="detail-icon">👤</div>
+          <div>
+            <span class="detail-label">Patient Name</span>
+            <span class="detail-value">{{ patient_name }}</span>
+          </div>
+        </div>
+        {% if patient_email %}
+        <div class="detail-row">
+          <div class="detail-icon">✉️</div>
+          <div>
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ patient_email }}</span>
+          </div>
+        </div>
+        {% endif %}
+        <div class="detail-row">
+          <div class="detail-icon">👨‍⚕️</div>
+          <div>
+            <span class="detail-label">Doctor</span>
+            <span class="detail-value">{{ doctor_name }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">🏥</div>
+          <div>
+            <span class="detail-label">Specialty</span>
+            <span class="detail-value">{{ specialty }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">📅</div>
+          <div>
+            <span class="detail-label">Date</span>
+            <span class="detail-value">{{ appt_date }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">🕐</div>
+          <div>
+            <span class="detail-label">Time</span>
+            <span class="detail-value">{{ appt_time }}</span>
+          </div>
+        </div>
+        {% if reason %}
+        <div class="detail-row">
+          <div class="detail-icon">📋</div>
+          <div>
+            <span class="detail-label">Reason</span>
+            <span class="detail-value">{{ reason }}</span>
+          </div>
+        </div>
+        {% endif %}
+        <div class="detail-row">
+          <div class="detail-icon">🔖</div>
+          <div>
+            <span class="detail-label">Booking ID</span>
+            <span class="detail-value" style="font-family:monospace;">#{{ '%05d' % appt_id }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-note">
+        <span class="ai-pulse"></span>
+        <p>🤖 This slot was AI-optimised for minimal wait time and maximum doctor availability.</p>
+      </div>
+
+      <div class="success-actions">
+        <a href="/" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+          </svg>
+          Book Another
+        </a>
+        <a href="/appointments" class="btn-outline">View All Appointments</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>MediSchedule AI · MBA Healthcare Operations Project · Built with Flask &amp; Python</p>
+  </footer>
+
+</body>
+
+</html>

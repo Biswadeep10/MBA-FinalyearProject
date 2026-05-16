@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediSchedule AI — Smart Healthcare Appointment System</title>
+  <meta name="description" content="AI-powered appointment scheduling system for modern healthcare operations. Smart slot recommendations, real-time availability, and seamless patient booking."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
+        <path d="M12 8v4l3 3"/>
+      </svg>
+    </div>
+    <span class="nav-title">MediSchedule <span class="ai-badge">AI</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link active">Book</a>
+    <a href="/appointments" class="nav-link">All Appointments</a>
+  </div>
+</nav>
+
+<!-- ── Hero ───────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-content">
+<h1 class="hero-title">Smart Healthcare<br/><span class="gradient-text">Appointment System</span></h1>
+    <p class="hero-subtitle">Our AI engine analyses real-time availability and recommends the optimal appointment slot to minimise wait times and maximise operational efficiency.</p>
+  </div>
+  <div class="hero-bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+</section>
+
+<!-- ── Stats ──────────────────────────────────── -->
+<section class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <p class="stat-label">Total Appointments</p>
+      <p class="stat-value">{{ stats.total }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div>
+      <p class="stat-label">Today's Bookings</p>
+      <p class="stat-value">{{ stats.today }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-purple">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div>
+      <p class="stat-label">Confirmed</p>
+      <p class="stat-value">{{ stats.confirmed }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-red">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <div>
+      <p class="stat-label">Cancelled</p>
+      <p class="stat-value">{{ stats.cancelled }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Main Layout ────────────────────────────── -->
+<main class="main-layout">
+
+  <!-- Booking Form -->
+  <section class="form-panel glass">
+    <div class="panel-header">
+      <h2>📅 Book an Appointment</h2>
+      <p>Fill in the details below. Our AI will recommend the best available slot.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form id="bookingForm" action="/book" method="POST">
+
+      <!-- Patient Info -->
+      <fieldset class="form-section">
+        <legend>Patient Information</legend>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="patient_name">Full Name <span class="req">*</span></label>
+            <input type="text" id="patient_name" name="patient_name" placeholder="e.g. Rahul Sharma" required/>
+          </div>
+          <div class="form-group">
+            <label for="patient_email">Email Address</label>
+            <input type="email" id="patient_email" name="patient_email" placeholder="rahul@example.com"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="patient_phone">Phone Number</label>
+            <input type="tel" id="patient_phone" name="patient_phone" placeholder="+91 98765 43210"/>
+          </div>
+          <div class="form-group">
+            <label for="reason">Reason for Visit</label>
+            <input type="text" id="reason" name="reason" placeholder="e.g. Routine check-up"/>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Doctor & Schedule -->
+      <fieldset class="form-section">
+        <legend>Doctor &amp; Schedule</legend>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="doctor_id">Select Doctor <span class="req">*</span></label>
+            <select id="doctor_id" name="doctor_id" required>
+              <option value="">-- Choose a Doctor --</option>
+              {% for d in doctors %}
+              <option value="{{ d.id }}">{{ d.name }} — {{ d.specialty }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="appointment_date">Appointment Date <span class="req">*</span></label>
+            <input type="date" id="appointment_date" name="appointment_date"
+                   value="{{ today }}" min="{{ today }}" required/>
+          </div>
+        </div>
+
+        <!-- AI Recommendation Banner -->
+        <div id="aiRecommendBox" class="ai-rec-box hidden">
+          <div class="ai-rec-header">
+            <span class="ai-pulse"></span>
+            <strong>🤖 AI Recommendation</strong>
+          </div>
+          <p id="aiRecText">Analysing available slots…</p>
+        </div>
+
+        <!-- Slot Picker -->
+        <div id="slotPickerWrap" class="hidden">
+          <label>Available Slots <span class="req">*</span></label>
+          <div id="slotPicker" class="slot-grid"></div>
+          <input type="hidden" id="appointment_time" name="appointment_time" required/>
+        </div>
+
+        <div id="slotLoading" class="slot-loading hidden">
+          <div class="spinner"></div> Fetching available slots…
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn-primary" id="submitBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        Confirm Appointment
+      </button>
+    </form>
+  </section>
+
+  <!-- Recent Appointments -->
+  <aside class="sidebar">
+    <div class="panel-header">
+      <h3>🕐 Recent Bookings</h3>
+    </div>
+    {% if recent %}
+    <ul class="recent-list">
+      {% for a in recent %}
+      <li class="recent-item">
+        <div class="recent-avatar">{{ a.patient_name[0] }}</div>
+        <div class="recent-info">
+          <strong>{{ a.patient_name }}</strong>
+          <span>{{ a.doctor_name }}</span>
+          <span class="recent-time">{{ a.appointment_date }} · {{ a.appointment_time }}</span>
+        </div>
+        <span class="badge badge-{{ 'green' if a.status == 'Confirmed' else 'red' }}">{{ a.status }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-state">No appointments yet. Book your first one!</p>
+    {% endif %}
+
+    <!-- Doctors Panel -->
+    <div class="panel-header" style="margin-top:2rem">
+      <h3>👨‍⚕️ Our Doctors</h3>
+    </div>
+    <ul class="doctor-list">
+      {% for d in doctors %}
+      <li class="doctor-item">
+        <div class="doctor-avatar">{{ d.name.split()[1][0] }}</div>
+        <div>
+          <strong>{{ d.name }}</strong>
+          <span class="specialty-tag">{{ d.specialty }}</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+</main>
+
+<footer class="footer">
+  <p>MediSchedule AI · MBA Healthcare Operations Project · Built with Flask &amp; Python</p>
+</footer>
+
+<script>
+  const doctorSel  = document.getElementById('doctor_id');
+  const dateSel    = document.getElementById('appointment_date');
+  const aiBox      = document.getElementById('aiRecommendBox');
+  const aiText     = document.getElementById('aiRecText');
+  const slotWrap   = document.getElementById('slotPickerWrap');
+  const slotGrid   = document.getElementById('slotPicker');
+  const slotInput  = document.getElementById('appointment_time');
+  const slotLoad   = document.getElementById('slotLoading');
+  const submitBtn  = document.getElementById('submitBtn');
+
+  function fetchSlots() {
+    const docId = doctorSel.value;
+    const date  = dateSel.value;
+    if (!docId || !date) return;
+
+    aiBox.classList.add('hidden');
+    slotWrap.classList.add('hidden');
+    slotLoad.classList.remove('hidden');
+    slotInput.value = '';
+    submitBtn.disabled = true;
+
+    fetch(`/api/slots?doctor_id=${docId}&date=${date}`)
+      .then(r => r.json())
+      .then(data => {
+        slotLoad.classList.add('hidden');
+        if (!data.available || data.available.length === 0) {
+          aiText.textContent = '⚠️ No slots available for this date. Try another date.';
+          aiBox.classList.remove('hidden');
+          return;
+        }
+
+        // Populate AI recommendation
+        aiText.innerHTML = `Best slot for optimal scheduling: <strong>${data.recommended}</strong> (morning slots prioritised for peak efficiency)`;
+        aiBox.classList.remove('hidden');
+
+        // Render slot buttons
+        slotGrid.innerHTML = '';
+        data.available.forEach(slot => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'slot-btn' + (slot === data.recommended ? ' slot-btn-recommended' : '');
+          btn.textContent = slot;
+          if (slot === data.recommended) {
+            const tag = document.createElement('span');
+            tag.className = 'slot-ai-tag';
+            tag.textContent = 'AI Pick';
+            btn.appendChild(tag);
+          }
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('slot-btn-active'));
+            btn.classList.add('slot-btn-active');
+            slotInput.value = slot;
+            submitBtn.disabled = false;
+          });
+          slotGrid.appendChild(btn);
+        });
+
+        // Auto-select recommended slot
+        const recBtn = slotGrid.querySelector('.slot-btn-recommended');
+        if (recBtn) recBtn.click();
+
+        slotWrap.classList.remove('hidden');
+      })
+      .catch(() => {
+        slotLoad.classList.add('hidden');
+        aiText.textContent = '⚠️ Could not fetch slots. Please refresh.';
+        aiBox.classList.remove('hidden');
+      });
+  }
+
+  doctorSel.addEventListener('change', fetchSlots);
+  dateSel.addEventListener('change', fetchSlots);
+</script>
+</body>
+</html>
