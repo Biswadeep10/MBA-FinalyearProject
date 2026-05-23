@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
 from datetime import datetime, timedelta
 import json
+import random
 
 app = Flask(__name__)
 DB_PATH = 'appointments.db'
@@ -125,6 +126,92 @@ def get_dashboard_stats():
     return {"total": total, "today": today_count, "confirmed": confirmed, "cancelled": cancelled}
 
 # ─────────────────────────────────────────────
+#  Queue Prediction Module (AI)
+# ─────────────────────────────────────────────
+AVG_CONSULT_MINUTES = 15   # average consultation duration
+BUFFER_MINUTES      = 5    # buffer between appointments
+
+def predict_queue(doctor_id, date, selected_slot=None):
+    """
+    AI Queue Prediction Engine.
+    For a given doctor and date, returns:
+      - queue_position : how many patients are before the selected slot
+      - estimated_wait : predicted wait in minutes
+      - doctor_load    : percentage of slots booked (0-100)
+      - load_label     : Low / Moderate / High / Full
+      - patients_today : count of confirmed patients for the day
+      - peak_hours     : busiest time window
+    """
+    conn = get_db()
+    doctor = conn.execute("SELECT * FROM doctors WHERE id=?", (doctor_id,)).fetchone()
+    if not doctor:
+        conn.close()
+        return None
+
+    base_slots = json.loads(doctor["available_slots"])
+    total_slots = len(base_slots)
+
+    # Get all confirmed bookings for this doctor on this date
+    booked_rows = conn.execute(
+        "SELECT appointment_time FROM appointments WHERE doctor_id=? AND appointment_date=? AND status != 'Cancelled'",
+        (doctor_id, date)
+    ).fetchall()
+    conn.close()
+
+    booked_times = [r["appointment_time"] for r in booked_rows]
+    patients_today = len(booked_times)
+
+    # Doctor load percentage
+    doctor_load = round((patients_today / total_slots) * 100) if total_slots > 0 else 0
+    if doctor_load >= 100:
+        load_label = "Full"
+    elif doctor_load >= 70:
+        load_label = "High"
+    elif doctor_load >= 40:
+        load_label = "Moderate"
+    else:
+        load_label = "Low"
+
+    # Queue position for selected slot
+    queue_position = 0
+    estimated_wait = 0
+    if selected_slot and selected_slot in base_slots:
+        slot_index = base_slots.index(selected_slot)
+        # Count how many booked slots come before the selected one
+        for bt in booked_times:
+            if bt in base_slots:
+                if base_slots.index(bt) < slot_index:
+                    queue_position += 1
+        estimated_wait = queue_position * (AVG_CONSULT_MINUTES + BUFFER_MINUTES)
+        # Add a small random factor to simulate real-world variance
+        estimated_wait += random.randint(0, 5)
+
+    # Find peak hours – the hour with the most bookings
+    hour_counts = {}
+    for bt in booked_times:
+        try:
+            h = datetime.strptime(bt, "%I:%M %p").hour
+            hour_counts[h] = hour_counts.get(h, 0) + 1
+        except ValueError:
+            pass
+
+    if hour_counts:
+        peak_h = max(hour_counts, key=hour_counts.get)
+        peak_hours = f"{peak_h}:00 – {peak_h + 1}:00"
+    else:
+        peak_hours = "No data yet"
+
+    return {
+        "queue_position":  queue_position,
+        "estimated_wait":  estimated_wait,
+        "doctor_load":     doctor_load,
+        "load_label":      load_label,
+        "patients_today":  patients_today,
+        "total_slots":     total_slots,
+        "peak_hours":      peak_hours
+    }
+
+# ─────────────────────────────────────────────
 #  Routes
 # ─────────────────────────────────────────────
 @app.route('/')
@@ -158,9 +245,11 @@ def api_slots():
         return jsonify({"error": "Missing doctor_id"}), 400
 
     recommended, available = ai_recommend_slot(doctor_id, date)
+    queue = predict_queue(doctor_id, date, recommended)
     return jsonify({
         "recommended": recommended,
-        "available":   available
+        "available":   available,
+        "queue":       queue
     })
 
 
@@ -236,6 +325,23 @@ def cancel(appt_id):
     conn.commit()
     conn.close()
     return redirect(url_for('appointments'))
+
+
+@app.route('/api/queue')
+def api_queue():
+    """Standalone queue prediction endpoint."""
+    doctor_id = request.args.get('doctor_id', type=int)
+    date      = request.args.get('date', datetime.now().strftime("%Y-%m-%d"))
+    slot      = request.args.get('slot', '')
+
+    if not doctor_id:
+        return jsonify({"error": "Missing doctor_id"}), 400
+
+    result = predict_queue(doctor_id, date, slot if slot else None)
+    if result is None:
+        return jsonify({"error": "Doctor not found"}), 404
+
+    return jsonify(result)
 
 
 if __name__ == '__main__':

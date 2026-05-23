@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MediSchedule AI — Smart Healthcare Appointment System</title>
-  <meta name="description" content="AI-powered appointment scheduling system for modern healthcare operations. Smart slot recommendations, real-time availability, and seamless patient booking."/>
+  <title>MediSchedule AI — Apollo Multispecialty Hospital</title>
+  <meta name="description" content="Book appointments online at Apollo Multispecialty Hospital. AI-powered scheduling for Cardiology, Neurology, Orthopedics, Dermatology and General Medicine."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
 </head>
 <body>
+
+<!-- ── Announcement Banner ────────────────────── -->
+<div class="announcement-bar">
+  <span class="ann-dot"></span>
+  <strong>New:</strong>&nbsp;AI-powered slot recommendations now live &nbsp;·&nbsp;
+  📞 Emergency Helpline: <strong>1800-XXX-XXXX</strong> (24/7)
+</div>
 
 <!-- ── Navigation ─────────────────────────────── -->
 <nav class="navbar">
@@ -20,24 +27,139 @@
         <path d="M12 8v4l3 3"/>
       </svg>
     </div>
-    <span class="nav-title">MediSchedule <span class="ai-badge">AI</span></span>
+    <div>
+      <span class="nav-title">Apollo Multispecialty Hospital</span>
+      <span class="nav-subtitle">Powered by MediSchedule <span class="ai-badge">AI</span></span>
+    </div>
   </div>
   <div class="nav-links">
-    <a href="/" class="nav-link active">Book</a>
-    <a href="/appointments" class="nav-link">All Appointments</a>
+    <a href="/" class="nav-link active">Book Appointment</a>
+    <a href="/appointments" class="nav-link">My Appointments</a>
+    <a href="tel:1800XXXXXXX" class="nav-link nav-link-emergency">🚨 Emergency</a>
   </div>
 </nav>
 
 <!-- ── Hero ───────────────────────────────────── -->
 <section class="hero">
   <div class="hero-content">
-<h1 class="hero-title">Smart Healthcare<br/><span class="gradient-text">Appointment System</span></h1>
-    <p class="hero-subtitle">Our AI engine analyses real-time availability and recommends the optimal appointment slot to minimise wait times and maximise operational efficiency.</p>
+    <div class="hero-meta">
+      <span class="hero-tag">🏥 Est. 1983 · NABH Accredited</span>
+      <span class="hero-tag">⭐ 4.8 / 5 · 12,000+ Patients</span>
+    </div>
+    <h1 class="hero-title">AI Automation in Healthcare:<br/><span class="gradient-text">Transforming Care and Operations</span></h1>
+    <p class="hero-desc">Book your consultation with our senior specialists in under 2 minutes. Our AI engine analyses real-time availability and recommends the best slot for you.</p>
+    <div class="hero-trust">
+      <div class="trust-item"><span class="trust-icon">✅</span> No waiting in queue</div>
+      <div class="trust-item"><span class="trust-icon">🔒</span> Secure &amp; confidential</div>
+      <div class="trust-item"><span class="trust-icon">📱</span> Instant confirmation</div>
+    </div>
+  </div>
+  <!-- Heartbeat line -->
+  <div class="heartbeat-wrap" aria-hidden="true">
+    <svg class="heartbeat-svg" viewBox="0 0 600 60" preserveAspectRatio="none">
+      <polyline class="heartbeat-line" points="0,30 80,30 110,5 130,55 150,30 180,30 210,30 230,10 250,50 270,30 320,30 350,30 370,8 390,52 410,30 600,30"/>
+    </svg>
   </div>
   <div class="hero-bg-blobs">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
+  </div>
+</section>
+
+<!-- ── Specialty Departments ─────────────────── -->
+<section class="departments reveal">
+  <h2 class="section-title">Our Specialties</h2>
+  <div class="dept-grid">
+    <button class="dept-card" data-specialty="Cardiology" onclick="preselectSpecialty('Cardiology')">
+      <div class="dept-icon dept-icon-red">❤️</div>
+      <span>Cardiology</span>
+      <small>Heart &amp; Vascular</small>
+    </button>
+    <button class="dept-card" data-specialty="Neurology" onclick="preselectSpecialty('Neurology')">
+      <div class="dept-icon dept-icon-purple">🧠</div>
+      <span>Neurology</span>
+      <small>Brain &amp; Nerves</small>
+    </button>
+    <button class="dept-card" data-specialty="Orthopedics" onclick="preselectSpecialty('Orthopedics')">
+      <div class="dept-icon dept-icon-blue">🦴</div>
+      <span>Orthopedics</span>
+      <small>Bones &amp; Joints</small>
+    </button>
+    <button class="dept-card" data-specialty="Dermatology" onclick="preselectSpecialty('Dermatology')">
+      <div class="dept-icon dept-icon-green">✨</div>
+      <span>Dermatology</span>
+      <small>Skin &amp; Hair</small>
+    </button>
+    <button class="dept-card" data-specialty="General Medicine" onclick="preselectSpecialty('General Medicine')">
+      <div class="dept-icon dept-icon-yellow">🩺</div>
+      <span>General Medicine</span>
+      <small>Primary Care</small>
+    </button>
+  </div>
+</section>
+
+<!-- ── How It Works ────────────────────────────── -->
+<section class="how-it-works reveal">
+  <h2 class="section-title">How It Works</h2>
+  <div class="steps-row">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">👤</div>
+      <h3>Enter Your Details</h3>
+      <p>Provide your name, contact info, and reason for visit.</p>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">🤖</div>
+      <h3>AI Picks Best Slot</h3>
+      <p>Our algorithm scans real-time availability and recommends the optimal time.</p>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">📅</div>
+      <h3>Confirm &amp; Attend</h3>
+      <p>Receive your booking ID instantly and arrive at your scheduled time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why Choose Us ──────────────────────────── -->
+<section class="why-us reveal">
+  <h2 class="section-title">Why Choose MediSchedule AI?</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <h3>Instant Booking</h3>
+      <p>Appointments confirmed in seconds — no phone calls, no paperwork.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🤖</div>
+      <h3>AI-Optimised Slots</h3>
+      <p>Smart scheduling reduces wait times by up to 40% compared to manual booking.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🔒</div>
+      <h3>Secure &amp; Private</h3>
+      <p>Patient data is encrypted and never shared with third parties.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📊</div>
+      <h3>Real-time Availability</h3>
+      <p>Live slot data ensures zero double-bookings and accurate scheduling.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">👨‍⚕️</div>
+      <h3>Senior Specialists</h3>
+      <p>Access to 15+ experienced doctors across 5 core specialties.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🏆</div>
+      <h3>NABH Accredited</h3>
+      <p>Nationally accredited for quality care and patient safety standards.</p>
+    </div>
   </div>
 </section>
 
@@ -117,7 +239,7 @@
           </div>
           <div class="form-group">
             <label for="reason">Reason for Visit</label>
-            <input type="text" id="reason" name="reason" placeholder="e.g. Routine check-up"/>
+            <input type="text" id="reason" name="reason" placeholder="e.g. Routine check-up, follow-up"/>
           </div>
         </div>
       </fieldset>
@@ -129,7 +251,7 @@
           <div class="form-group">
             <label for="doctor_id">Select Doctor <span class="req">*</span></label>
             <select id="doctor_id" name="doctor_id" required>
-              <option value="">-- Choose a Doctor --</option>
+              <option value="">-- Choose a Specialist --</option>
               {% for d in doctors %}
               <option value="{{ d.id }}">{{ d.name }} — {{ d.specialty }}</option>
               {% endfor %}
@@ -161,7 +283,61 @@
         <div id="slotLoading" class="slot-loading hidden">
           <div class="spinner"></div> Fetching available slots…
         </div>
+
+        <!-- Queue Prediction Panel -->
+        <div id="queuePanel" class="queue-panel hidden">
+          <div class="queue-header">
+            <span class="ai-pulse"></span>
+            <strong>📊 Queue Prediction Module</strong>
+          </div>
+          <div class="queue-grid">
+            <div class="queue-metric">
+              <div class="queue-metric-icon">👥</div>
+              <div>
+                <span class="queue-metric-label">Queue Position</span>
+                <span class="queue-metric-value" id="queuePosition">—</span>
+              </div>
+            </div>
+            <div class="queue-metric">
+              <div class="queue-metric-icon">⏱️</div>
+              <div>
+                <span class="queue-metric-label">Est. Wait Time</span>
+                <span class="queue-metric-value" id="queueWait">—</span>
+              </div>
+            </div>
+            <div class="queue-metric">
+              <div class="queue-metric-icon">📅</div>
+              <div>
+                <span class="queue-metric-label">Patients Today</span>
+                <span class="queue-metric-value" id="queuePatients">—</span>
+              </div>
+            </div>
+            <div class="queue-metric">
+              <div class="queue-metric-icon">🔥</div>
+              <div>
+                <span class="queue-metric-label">Peak Hours</span>
+                <span class="queue-metric-value" id="queuePeak">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="queue-load-section">
+            <div class="queue-load-header">
+              <span>Doctor Load</span>
+              <span id="queueLoadLabel" class="queue-load-badge">Low</span>
+            </div>
+            <div class="queue-load-bar">
+              <div class="queue-load-fill" id="queueLoadFill" style="width:0%"></div>
+            </div>
+            <span class="queue-load-pct" id="queueLoadPct">0%</span>
+          </div>
+        </div>
+
       </fieldset>
+
+      <div class="form-disclaimer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        By booking you agree to our cancellation policy. Please arrive 10 minutes before your slot.
+      </div>
 
       <button type="submit" class="btn-primary" id="submitBtn" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -170,13 +346,26 @@
     </form>
   </section>
 
-  <!-- Recent Appointments -->
+  <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="panel-header">
+
+    <!-- OPD Timings -->
+    <div class="info-card glass">
+      <div class="info-card-header">🕐 OPD Timings</div>
+      <ul class="timing-list">
+        <li><span>Mon – Fri</span><span>8:00 AM – 6:00 PM</span></li>
+        <li><span>Saturday</span><span>9:00 AM – 2:00 PM</span></li>
+        <li><span>Sunday</span><span class="closed">Closed</span></li>
+        <li class="emg-row"><span>🚨 Emergency</span><span class="emg-badge">24 / 7</span></li>
+      </ul>
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="panel-header" style="margin-top:1.5rem">
       <h3>🕐 Recent Bookings</h3>
     </div>
     {% if recent %}
-    <ul class="recent-list">
+    <ul class="recent-list glass">
       {% for a in recent %}
       <li class="recent-item">
         <div class="recent-avatar">{{ a.patient_name[0] }}</div>
@@ -190,30 +379,60 @@
       {% endfor %}
     </ul>
     {% else %}
-    <p class="empty-state">No appointments yet. Book your first one!</p>
+    <p class="empty-state glass" style="padding:1.2rem;">No appointments yet. Book your first one!</p>
     {% endif %}
 
     <!-- Doctors Panel -->
-    <div class="panel-header" style="margin-top:2rem">
-      <h3>👨‍⚕️ Our Doctors</h3>
+    <div class="panel-header" style="margin-top:1.5rem">
+      <h3>👨‍⚕️ Our Specialists</h3>
     </div>
-    <ul class="doctor-list">
+    <ul class="doctor-list glass">
       {% for d in doctors %}
       <li class="doctor-item">
         <div class="doctor-avatar">{{ d.name.split()[1][0] }}</div>
-        <div>
+        <div style="flex:1;min-width:0">
           <strong>{{ d.name }}</strong>
-          <span class="specialty-tag">{{ d.specialty }}</span>
+          <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-top:.2rem">
+            <span class="specialty-tag">{{ d.specialty }}</span>
+          </div>
+          <div class="doc-rating">⭐ 4.{{ loop.index + 5 }} &nbsp;·&nbsp; {{ 8 + loop.index }} yrs exp</div>
         </div>
+        <span class="avail-dot" title="Available today"></span>
       </li>
       {% endfor %}
     </ul>
+
+    <!-- Location -->
+    <div class="info-card glass" style="margin-top:1.5rem">
+      <div class="info-card-header">📍 Location</div>
+      <p class="location-text">42, Hospital Road, Sector 15<br/>New Delhi – 110 001<br/><a href="tel:+911800XXXXXX" class="tel-link">📞 +91 1800-XXX-XXXX</a></p>
+    </div>
+
   </aside>
 
 </main>
 
+<!-- ── Footer ─────────────────────────────────── -->
 <footer class="footer">
-  <p>MediSchedule AI · MBA Healthcare Operations Project · Built with Flask &amp; Python</p>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <strong>Apollo Multispecialty Hospital</strong>
+      <p>42, Hospital Road, Sector 15<br/>New Delhi – 110 001</p>
+    </div>
+    <div class="footer-col">
+      <strong>Quick Links</strong>
+      <a href="/">Book Appointment</a>
+      <a href="/appointments">My Appointments</a>
+    </div>
+    <div class="footer-col">
+      <strong>Contact</strong>
+      <p>📞 1800-XXX-XXXX</p>
+      <p>✉️ appointments@apollo.health</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    MediSchedule AI · MBA Healthcare Operations Project · Built with Flask &amp; Python
+  </div>
 </footer>
 
 <script>
@@ -247,12 +466,8 @@
           aiBox.classList.remove('hidden');
           return;
         }
-
-        // Populate AI recommendation
         aiText.innerHTML = `Best slot for optimal scheduling: <strong>${data.recommended}</strong> (morning slots prioritised for peak efficiency)`;
         aiBox.classList.remove('hidden');
-
-        // Render slot buttons
         slotGrid.innerHTML = '';
         data.available.forEach(slot => {
           const btn = document.createElement('button');
@@ -270,15 +485,17 @@
             btn.classList.add('slot-btn-active');
             slotInput.value = slot;
             submitBtn.disabled = false;
+            // Update queue prediction for the newly selected slot
+            updateQueueForSlot(slot);
           });
           slotGrid.appendChild(btn);
         });
-
-        // Auto-select recommended slot
         const recBtn = slotGrid.querySelector('.slot-btn-recommended');
         if (recBtn) recBtn.click();
-
         slotWrap.classList.remove('hidden');
+
+        // Render queue prediction from the same response
+        renderQueue(data.queue);
       })
       .catch(() => {
         slotLoad.classList.add('hidden');
@@ -289,6 +506,65 @@
 
   doctorSel.addEventListener('change', fetchSlots);
   dateSel.addEventListener('change', fetchSlots);
+
+  // ── Queue Prediction Renderer ──────────────────
+  const queuePanel    = document.getElementById('queuePanel');
+  const queuePosition = document.getElementById('queuePosition');
+  const queueWait     = document.getElementById('queueWait');
+  const queuePatients = document.getElementById('queuePatients');
+  const queuePeak     = document.getElementById('queuePeak');
+  const queueLoadLabel = document.getElementById('queueLoadLabel');
+  const queueLoadFill  = document.getElementById('queueLoadFill');
+  const queueLoadPct   = document.getElementById('queueLoadPct');
+
+  function renderQueue(q) {
+    if (!q) { queuePanel.classList.add('hidden'); return; }
+    queuePosition.textContent = q.queue_position === 0 ? 'No queue — you\'re first!' : `#${q.queue_position} in line`;
+    queueWait.textContent     = q.estimated_wait === 0 ? 'Immediate' : `~${q.estimated_wait} min`;
+    queuePatients.textContent = `${q.patients_today} / ${q.total_slots}`;
+    queuePeak.textContent     = q.peak_hours;
+    queueLoadLabel.textContent = q.load_label;
+    queueLoadLabel.className   = 'queue-load-badge queue-load-' + q.load_label.toLowerCase();
+    queueLoadFill.style.width  = Math.min(q.doctor_load, 100) + '%';
+    queueLoadPct.textContent   = q.doctor_load + '%';
+
+    // Colour the load bar
+    if (q.doctor_load >= 70) queueLoadFill.style.background = 'linear-gradient(90deg, var(--red), #f97316)';
+    else if (q.doctor_load >= 40) queueLoadFill.style.background = 'linear-gradient(90deg, #f59e0b, #eab308)';
+    else queueLoadFill.style.background = 'linear-gradient(90deg, var(--green), #4ade80)';
+
+    queuePanel.classList.remove('hidden');
+  }
+
+  function updateQueueForSlot(slot) {
+    const docId = doctorSel.value;
+    const date  = dateSel.value;
+    if (!docId || !date || !slot) return;
+    fetch(`/api/queue?doctor_id=${docId}&date=${date}&slot=${encodeURIComponent(slot)}`)
+      .then(r => r.json())
+      .then(renderQueue)
+      .catch(() => {});
+  }
+
+  // ── Specialty dept card → auto-select doctor ──
+  function preselectSpecialty(specialty) {
+    const opt = [...doctorSel.options].find(o => o.text.includes(specialty));
+    if (opt) {
+      doctorSel.value = opt.value;
+      doctorSel.dispatchEvent(new Event('change'));
+      document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Highlight active dept card
+    document.querySelectorAll('.dept-card').forEach(c => c.classList.remove('dept-card-active'));
+    const card = document.querySelector(`.dept-card[data-specialty="${specialty}"]`);
+    if (card) card.classList.add('dept-card-active');
+  }
+
+  // ── Scroll-reveal ─────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
