@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+import os
 import sqlite3
 from datetime import datetime, timedelta
 import json
@@ -295,4 +296,9 @@ def cancel(appt_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Port 5000 is used by macOS AirPlay Receiver; localhost:5000 often returns HTTP 403
+    # from Control Center instead of reaching Flask. Use 5001 by default.
+    port = int(os.environ.get('PORT', 5001))
+    url = f'http://127.0.0.1:{port}'
+    print(f'\n  CareFlow Health → {url}\n')
+    app.run(debug=True, host='127.0.0.1', port=port)
