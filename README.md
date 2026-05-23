@@ -1,4 +1,8 @@
-# 🏥 CareFlow Health — Healthcare Appointment Scheduling System
+# CareFlow Health — Healthcare Appointment Scheduling System
+
+<p align="center">
+  <img src="static/careflow-icon.svg" alt="CareFlow Health" width="64" height="64"/>
+</p>
 
 An Professional appointment scheduling system built for a **MBA Final Year Project** on Healthcare Operations Management. The system demonstrates how AI-driven slot recommendation reduces scheduling conflicts, minimises patient wait times, and improves overall operational efficiency in a hospital environment.
 
@@ -80,12 +84,21 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### 6. Open in your browser
+The terminal prints the URL (default **port 5001**).
+
+### 5. Open in your browser
 ```
-http://127.0.0.1:5000
+http://127.0.0.1:5001
 ```
+(`http://localhost:5001` works too.)
+
+> **macOS note:** Port **5000** is often used by **AirPlay Receiver**. Opening `http://localhost:5000` can show *“Access denied” / HTTP 403* from macOS, with **no Flask logs** — because the request never reaches this app. Use port **5001** (default) or set `PORT=8080 python app.py` if needed.
 
 The SQLite database (`appointments.db`) is created automatically on first run, and the five doctors are seeded instantly — no manual setup required.
+
+### Backend roadmap
+
+See [TODO.md](TODO.md) for planned auth, logging, and production work (not implemented in this POC).
 
 ---
 
