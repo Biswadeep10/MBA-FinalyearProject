@@ -45,7 +45,6 @@ def init_db():
         )
     ''')
 
-    # Seed doctors if table is empty
     count = cur.execute("SELECT COUNT(*) FROM doctors").fetchone()[0]
     if count == 0:
         doctors = [
@@ -69,7 +68,6 @@ init_db()
 #  AI Scheduling Engine
 # ─────────────────────────────────────────────
 def get_booked_slots(doctor_id, date):
-    """Return list of time strings already booked for a doctor on a date."""
     conn = get_db()
     rows = conn.execute(
         "SELECT appointment_time FROM appointments WHERE doctor_id=? AND appointment_date=? AND status != 'Cancelled'",
@@ -87,7 +85,6 @@ def get_datetime_for_slot(date, time_str):
 
 
 def predict_queue(date=None):
-    """Estimate today’s queue load and wait time based on scheduled appointments."""
     date = date or datetime.now().strftime("%Y-%m-%d")
     now = datetime.now()
     conn = get_db()
@@ -129,13 +126,6 @@ def predict_queue(date=None):
 
 
 def ai_recommend_slot(doctor_id, date):
-    """
-    AI recommendation logic:
-    1. Fetch doctor's base slots.
-    2. Remove already-booked slots for the requested date.
-    3. Score remaining slots: morning slots preferred (productivity peak).
-    4. Return top recommendation + all available slots.
-    """
     conn = get_db()
     doctor = conn.execute("SELECT * FROM doctors WHERE id=?", (doctor_id,)).fetchone()
     conn.close()
@@ -143,34 +133,34 @@ def ai_recommend_slot(doctor_id, date):
     if not doctor:
         return None, []
 
-    base_slots  = json.loads(doctor["available_slots"])
-    booked      = get_booked_slots(doctor_id, date)
-    available   = [s for s in base_slots if s not in booked]
+    base_slots = json.loads(doctor["available_slots"])
+    booked = get_booked_slots(doctor_id, date)
+    available = [s for s in base_slots if s not in booked]
 
     if not available:
         return "No Slots Available", []
 
-    # Score: morning (AM) slots get +2, others +1; earlier = higher priority
     def score(slot):
         t = datetime.strptime(slot, "%I:%M %p")
         if t.hour < 12:
-            return (0, t.hour, t.minute)   # morning first
+            return (0, t.hour, t.minute)
         return (1, t.hour, t.minute)
 
     available_sorted = sorted(available, key=score)
     return available_sorted[0], available_sorted
 
+
 def get_dashboard_stats():
     conn = get_db()
-    total       = conn.execute("SELECT COUNT(*) FROM appointments").fetchone()[0]
-    today       = datetime.now().strftime("%Y-%m-%d")
+    total = conn.execute("SELECT COUNT(*) FROM appointments").fetchone()[0]
+    today = datetime.now().strftime("%Y-%m-%d")
     today_count = conn.execute(
         "SELECT COUNT(*) FROM appointments WHERE appointment_date=?", (today,)
     ).fetchone()[0]
-    confirmed   = conn.execute(
+    confirmed = conn.execute(
         "SELECT COUNT(*) FROM appointments WHERE status='Confirmed'"
     ).fetchone()[0]
-    cancelled   = conn.execute(
+    cancelled = conn.execute(
         "SELECT COUNT(*) FROM appointments WHERE status='Cancelled'"
     ).fetchone()[0]
     conn.close()
@@ -184,7 +174,7 @@ def get_dashboard_stats():
 def home():
     conn = get_db()
     doctors = conn.execute("SELECT * FROM doctors").fetchall()
-    recent  = conn.execute('''
+    recent = conn.execute('''
         SELECT a.*, d.name as doctor_name, d.specialty
         FROM appointments a
         JOIN doctors d ON a.doctor_id = d.id
@@ -205,9 +195,8 @@ def home():
 
 @app.route('/api/slots')
 def api_slots():
-    """AJAX endpoint: returns AI-recommended slot + all available slots."""
     doctor_id = request.args.get('doctor_id', type=int)
-    date      = request.args.get('date', datetime.now().strftime("%Y-%m-%d"))
+    date = request.args.get('date', datetime.now().strftime("%Y-%m-%d"))
 
     if not doctor_id:
         return jsonify({"error": "Missing doctor_id"}), 400
@@ -215,21 +204,20 @@ def api_slots():
     recommended, available = ai_recommend_slot(doctor_id, date)
     return jsonify({
         "recommended": recommended,
-        "available":   available
+        "available": available
     })
 
 
 @app.route('/book', methods=['POST'])
 def book():
-    patient_name  = request.form['patient_name'].strip()
+    patient_name = request.form['patient_name'].strip()
     patient_email = request.form.get('patient_email', '').strip()
     patient_phone = request.form.get('patient_phone', '').strip()
-    doctor_id     = int(request.form['doctor_id'])
-    appt_date     = request.form['appointment_date']
-    appt_time     = request.form['appointment_time']
-    reason        = request.form.get('reason', '').strip()
+    doctor_id = int(request.form['doctor_id'])
+    appt_date = request.form['appointment_date']
+    appt_time = request.form['appointment_time']
+    reason = request.form.get('reason', '').strip()
 
-    # Conflict guard
     conn = get_db()
     conflict = conn.execute(
         "SELECT id FROM appointments WHERE doctor_id=? AND appointment_date=? AND appointment_time=? AND status!='Cancelled'",
@@ -238,8 +226,10 @@ def book():
 
     if conflict:
         conn.close()
-        doctors = conn.execute("SELECT * FROM doctors").fetchall() if False else get_db().execute("SELECT * FROM doctors").fetchall()
-        stats   = get_dashboard_stats()
+        conn = get_db()
+        doctors = conn.execute("SELECT * FROM doctors").fetchall()
+        conn.close()
+        stats = get_dashboard_stats()
         return render_template('index.html',
                                doctors=doctors,
                                stats=stats,
@@ -296,6 +286,5 @@ def cancel(appt_id):
 
 
 if __name__ == '__main__':
-    # Use the environment PORT provided by Render or default to 5001.
     port = int(os.environ.get('PORT', 5001))
     app.run(debug=False, host='0.0.0.0', port=port)
