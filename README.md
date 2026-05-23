@@ -1,6 +1,6 @@
-# 🏥 MediSchedule AI — Healthcare Appointment Scheduling System
+# 🏥 CareFlow Health — Healthcare Appointment Scheduling System
 
-An AI-powered appointment scheduling system built for a **MBA Final Year Project** on Healthcare Operations Management. The system demonstrates how AI-driven slot recommendation reduces scheduling conflicts, minimises patient wait times, and improves overall operational efficiency in a hospital environment.
+An Professional appointment scheduling system built for a **MBA Final Year Project** on Healthcare Operations Management. The system demonstrates how AI-driven slot recommendation reduces scheduling conflicts, minimises patient wait times, and improves overall operational efficiency in a hospital environment.
 
 ---
 
@@ -80,7 +80,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### 5. Open in your browser
+### 6. Open in your browser
 ```
 http://127.0.0.1:5000
 ```
